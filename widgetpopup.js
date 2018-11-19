@@ -5,3 +5,5 @@ function prepareFrame() {
 	ifrm.style.height = '480px';
 	document.body.appendChild(ifrm);
 }
+
+prepareFrame();
