@@ -35,7 +35,7 @@
 	}
 
 	/* Load jQuery */
-	loadScript('../jquery.js', function() {
+	loadScript('https://code.jquery.com/jquery-3.3.1.min.js', function() {
 		/* Restore $ and window.jQuery to their previous values and store the
      new jQuery in our local jQuery variables. */
 		$ = jQuery = window.jQuery.noConflict(true);
