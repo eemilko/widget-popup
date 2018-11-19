@@ -1,58 +1,44 @@
-(function() {
-	// Localize jQuery variable
-	var jQuery;
+/* widget.js */
+(function(window, document) {
+	'use strict' /* Wrap code in an IIFE */;
 
-	/******** Load jQuery if not present *********/
-	if (window.jQuery === undefined || window.jQuery.fn.jquery !== '1.4.2') {
-		var script_tag = document.createElement('script');
-		script_tag.setAttribute('type', 'text/javascript');
-		script_tag.setAttribute(
-			'src',
-			'http://ajax.googleapis.com/ajax/libs/jquery/1.4.2/jquery.min.js'
-		);
-		if (script_tag.readyState) {
-			script_tag.onreadystatechange = function() {
-				// For old versions of IE
-				if (
-					this.readyState == 'complete' ||
-					this.readyState == 'loaded'
-				) {
-					scriptLoadHandler();
-				}
-			};
-		} else {
-			script_tag.onload = scriptLoadHandler;
+	var jQuery, $; // Localize jQuery variables
+
+	function loadScript(url, callback) {
+		/* Load script from url and calls callback once it's loaded */
+		var scriptTag = document.createElement('script');
+		scriptTag.setAttribute('type', 'text/javascript');
+		scriptTag.setAttribute('src', url);
+		if (typeof callback !== 'undefined') {
+			if (scriptTag.readyState) {
+				/* For old versions of IE */
+				scriptTag.onreadystatechange = function() {
+					if (
+						this.readyState === 'complete' ||
+						this.readyState === 'loaded'
+					) {
+						callback();
+					}
+				};
+			} else {
+				scriptTag.onload = callback;
+			}
 		}
-		// Try to find the head, otherwise default to the documentElement
 		(
 			document.getElementsByTagName('head')[0] || document.documentElement
-		).appendChild(script_tag);
-	} else {
-		// The jQuery version on the window is the one we want to use
-		jQuery = window.jQuery;
-		main();
+		).appendChild(scriptTag);
 	}
 
-	/******** Called once jQuery has loaded ******/
-	function scriptLoadHandler() {
-		// Restore $ and window.jQuery to their previous values and store the
-		// new jQuery in our local jQuery variable
-		jQuery = window.jQuery.noConflict(true);
-		// Call our main function
-		main();
-	}
-
-	/******** Our main function ********/
 	function main() {
-		jQuery(document).ready(function($) {
-			/******* Load HTML *******/
-			var jsonp_url =
-				'http://al.smeuh.org/cgi-bin/webwidget_tutorial.py?callback=?';
-			$.getJSON(jsonp_url, function(data) {
-				$('#example-widget-container').html(
-					'This data comes from another server: ' + data.html
-				);
-			});
-		});
+		/* The main logic of our widget */
+		$('#hello').html('This content comes from our widget');
 	}
-})(); // We call our anonymous function immediately
+
+	/* Load jQuery */
+	loadScript('../jquery.js', function() {
+		/* Restore $ and window.jQuery to their previous values and store the
+     new jQuery in our local jQuery variables. */
+		$ = jQuery = window.jQuery.noConflict(true);
+		main(); /* Execute the main logic of our widget once jQuery is loaded */
+	});
+})(window, document); /* end IIFE */
